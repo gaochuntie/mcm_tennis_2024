@@ -11,24 +11,95 @@ import java.util.Iterator;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static String orig_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/final.xlsx";
-    public static String dest_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/ND.xlsx";
+    public static String orig_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/full_data.xlsx";
+    public static String dest_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/P1.xlsx";
+    public static  int orig_xlsx_sheet = 0;
+    public static  int dest_xlsx_sheet = 0;
+    public static  int set_no_column = 4;
+    public static  int game_no_column = 5;
+    public static  int point_no_column = 6;
+    public static  int server_column = 13;
+    public static  int ace_column = 20;
+    public static  int point_score_column = 11;
+    public static  int point_sum_column = 20;
+    public static  int point_con_win3_column = 21;
+    public static  int point_con_fall3_column = 22;
+    public static  int current_game_win_column = 9;
+    public static  int game_con_win3_column = 23;
+    public static  int game_con_fall3_column = 24;
+    public static  int current_set_win_column = 7;
+    public static  int set_con_win2_column = 25;
+    public static  int set_con_fall2_column = 26;
+    public static  int ace_sum_d_server_count_column = 27;
+    public static  int player_name_column = 1;
+    public static final String player_unknown = "unknown";
 
+    public static  int is_server_value = 1;
     public static void main(String[] args) {
+        loadP2Statistics();
         fillData();
-
     }
 
+    public static void loadP1Statistics() {
+        orig_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/full_data.xlsx";
+        dest_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/P1.xlsx";
+         orig_xlsx_sheet = 0;
+         dest_xlsx_sheet = 0;
+         set_no_column = 4;
+         game_no_column = 5;
+         point_no_column = 6;
+         server_column = 13;
+         ace_column = 20;
+         point_score_column = 11;
+         point_sum_column = 20;
+         point_con_win3_column = 21;
+         point_con_fall3_column = 22;
+         current_game_win_column = 9;
+         game_con_win3_column = 23;
+         game_con_fall3_column = 24;
+         current_set_win_column = 7;
+         set_con_win2_column = 25;
+         set_con_fall2_column = 26;
+         ace_sum_d_server_count_column = 27;
+         player_name_column = 1;
+
+         is_server_value = 1;
+    }
+    public static void loadP2Statistics() {
+        orig_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/full_data.xlsx";
+        dest_xlsx = "/home/jackmaxpale/Desktop/Projects/ICM/2024_MCM-ICM_Problems/parsedData/P2.xlsx";
+        orig_xlsx_sheet = 0;
+        dest_xlsx_sheet = 0;
+        set_no_column = 4;
+        game_no_column = 5;
+        point_no_column = 6;
+        server_column = 13;
+        ace_column = 21;
+        point_score_column = 12;
+        point_sum_column = 20;
+        point_con_win3_column = 21;
+        point_con_fall3_column = 22;
+        current_game_win_column = 10;
+        game_con_win3_column = 23;
+        game_con_fall3_column = 24;
+        current_set_win_column = 8;
+        set_con_win2_column = 25;
+        set_con_fall2_column = 26;
+        ace_sum_d_server_count_column = 27;
+        player_name_column = 1;
+
+        is_server_value = 2;
+    }
     public static void fillData() {
         try (FileInputStream fis = new FileInputStream(orig_xlsx);
              Workbook workbook = new XSSFWorkbook(fis)) {
-            Sheet sheet = workbook.getSheetAt(1);
+            Sheet sheet = workbook.getSheetAt(orig_xlsx_sheet);
 
             Iterator<Row> iterator = sheet.iterator();
             //dest
             FileInputStream fis1 = new FileInputStream(dest_xlsx);
             Workbook workbook1 = new XSSFWorkbook(fis1);
-            Sheet sheet1 = workbook1.getSheetAt(0);
+            Sheet sheet1 = workbook1.getSheetAt(dest_xlsx_sheet);
             Iterator<Row> iterator1 = sheet1.iterator();
 
             // Skip the header row
@@ -67,6 +138,10 @@ public class Main {
 
             int server_count = 0;
             int ace_sum = 0;
+
+            String player_name = player_unknown;
+            String player_name_previous = player_unknown;
+
             while (iterator.hasNext()) {
                 Row nextRow = iterator.next();
                 Row nextRow1 = iterator1.next();
@@ -84,14 +159,60 @@ public class Main {
                 point_sum_previous2 = point_sum_previous;
                 point_sum_previous = point_sum;
 
+                player_name_previous = player_name;
 
-                set_no = (int) nextRow.getCell(4).getNumericCellValue();
-                game_no = (int) nextRow.getCell(5).getNumericCellValue();
-                point_no = (int) nextRow.getCell(6).getNumericCellValue();
-                if ((int) nextRow.getCell(13).getNumericCellValue() == 2) {
+
+                set_no = (int) nextRow.getCell(set_no_column).getNumericCellValue();
+                game_no = (int) nextRow.getCell(game_no_column).getNumericCellValue();
+                point_no = (int) nextRow.getCell(point_no_column).getNumericCellValue();
+                player_name = nextRow.getCell(player_name_column).getStringCellValue();
+                System.out.println("Current player "+player_name+" Previous Player "+player_name_previous );
+                if (!player_name.equals(player_name_previous) ) {
+                    if (!player_name.equals(player_unknown)) {
+                        if (!player_name_previous.equals(player_unknown)) {
+                            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6\nFresh Player " + player_name);
+                            previous_score = 0;
+                            previous2_score = 0;
+                            previous3_score = 0;
+
+                            previous_game_win = 0;
+                            previous2_game_win = 0;
+                            previous3_game_win = 0;
+
+                            previous_set_win = 0;
+                            previous2_set_win = 0;
+
+                            current_score = 0;
+                            current_game_win = 0;
+                            current_set_win = 0;
+
+                            point_sum = 0;
+                            point_sum_previous = 0;
+                            point_sum_previous2 = 0;
+                            point_sum_previous3 = 0;
+
+                            point_no = 1;
+                            set_no = 1;
+                            game_no = 1;
+                            point_no_previous = 1;
+                            set_no_previous = 1;
+                            game_no_previous = 1;
+
+                            server_count = 0;
+                            ace_sum = 0;
+
+                            player_name = player_unknown;
+                            player_name_previous = player_unknown;
+                            System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6");
+                        }
+                    }
+
+
+                }
+                if ((int) nextRow.getCell(server_column).getNumericCellValue() == is_server_value) {
                     server_count += 1;
                 }
-                if ((int) nextRow.getCell(21).getNumericCellValue() == 1) {
+                if ((int) nextRow.getCell(ace_column).getNumericCellValue() == 1) {
                     ace_sum += 1;
                 }
                 if (game_no > game_no_previous) {
@@ -105,21 +226,21 @@ public class Main {
                 }
 
                 // parse score sum
-                Cell cell = nextRow.getCell(12);
+                Cell cell = nextRow.getCell(point_score_column);
                 if (cell.getCellType() == CellType.NUMERIC) {
-                    current_score = (int) nextRow.getCell(12).getNumericCellValue();
+                    current_score = (int) nextRow.getCell(point_score_column).getNumericCellValue();
                     System.out.println(nextRow.getRowNum() + " current_score " + current_score);
                     if (current_score > previous_score) {
                         point_sum += 1;
-                        nextRow1.getCell(13).setCellValue(point_sum);
+                        nextRow1.getCell(point_sum_column).setCellValue(point_sum);
                         System.out.println(nextRow1.getRowNum() + " New  " + point_sum);
 
                     } else {
-                        nextRow1.getCell(13).setCellValue(point_sum);
+                        nextRow1.getCell(point_sum_column).setCellValue(point_sum);
                         System.out.println(nextRow1.getRowNum() + " New  " + point_sum);
                     }
                 } else {
-                    nextRow1.getCell(13).setCellValue(point_sum);
+                    nextRow1.getCell(point_sum_column).setCellValue(point_sum);
                     System.out.println(nextRow1.getRowNum() + " New  " + point_sum);
                 }
                 System.out.println(nextRow.getRowNum() + " point_sum " + point_sum + "\n"
@@ -132,9 +253,9 @@ public class Main {
                         point_sum_previous > point_sum_previous2 &&
                         point_sum_previous2 > point_sum_previous3) {
                     System.out.println(nextRow1.getRowNum() + " Point Con Win3  " );
-                    nextRow1.getCell(18).setCellValue(1);
+                    nextRow1.getCell(point_con_win3_column).setCellValue(1);
                 }else{
-                    nextRow1.getCell(18).setCellValue(0);
+                    nextRow1.getCell(point_con_win3_column).setCellValue(0);
                 }
                 //parse point_con_fall3
                 if (point_sum <= point_sum_previous &&
@@ -142,26 +263,26 @@ public class Main {
                         point_sum_previous2 <= point_sum_previous3) {
                     if (point_sum > 0) {
                         System.out.println(nextRow1.getRowNum() + " Point Con Fall3  " );
-                        nextRow1.getCell(19).setCellValue(1);
+                        nextRow1.getCell(point_con_fall3_column).setCellValue(1);
                     }else{
-                        nextRow1.getCell(19).setCellValue(0);
+                        nextRow1.getCell(point_con_fall3_column).setCellValue(0);
                     }
                 }else{
-                    nextRow1.getCell(19).setCellValue(0);
+                    nextRow1.getCell(point_con_fall3_column).setCellValue(0);
                 }
                 System.out.println(nextRow.getRowNum() + " game_win " + current_game_win + "\n"
                         + " previous_game_win " + previous_game_win + "\n"
                         + " previous2_game_win " + previous2_game_win + "\n"
                         + " previous3_game_win " + previous3_game_win + "\n");
                 //parse game_con win3
-                current_game_win = (int)nextRow.getCell(10).getNumericCellValue();
+                current_game_win = (int)nextRow.getCell(current_game_win_column).getNumericCellValue();
                 if (current_game_win > previous_game_win &&
                         previous_game_win > previous2_game_win &&
                         previous2_game_win > previous3_game_win) {
                     System.out.println(nextRow1.getRowNum() + " Game Con Win3  ");
-                    nextRow1.getCell(20).setCellValue(1);
+                    nextRow1.getCell(game_con_win3_column).setCellValue(1);
                 }else {
-                    nextRow1.getCell(20).setCellValue(0);
+                    nextRow1.getCell(game_con_win3_column).setCellValue(0);
                 }
                 //parse game_con_fall3
                 if (current_game_win <= previous_game_win &&
@@ -169,46 +290,50 @@ public class Main {
                         previous2_game_win <= previous3_game_win) {
                     if (current_game_win > 0) {
                         System.out.println(nextRow1.getRowNum() + " Game Con Fall3  ");
-                        nextRow1.getCell(21).setCellValue(1);
+                        nextRow1.getCell(game_con_fall3_column).setCellValue(1);
                     }else{
-                        nextRow1.getCell(21).setCellValue(0);
+                        nextRow1.getCell(game_con_fall3_column).setCellValue(0);
                     }
 
                 }else {
 
-                    nextRow1.getCell(21).setCellValue(0);
+                    nextRow1.getCell(game_con_fall3_column).setCellValue(0);
                 }
                 System.out.println(nextRow.getRowNum() + " set_win " + current_set_win + "\n"
                         + " previous_set_win " + previous_set_win + "\n"
                         + " previous2_set_win " + previous2_set_win + "\n");
                 //parse set_con_win2
-                current_set_win = (int)nextRow.getCell(8).getNumericCellValue();
+                current_set_win = (int)nextRow.getCell(current_set_win_column).getNumericCellValue();
                 if (current_set_win > previous_set_win &&
                         previous_set_win > previous2_set_win) {
                     System.out.println(nextRow1.getRowNum() + " Set Con Win2  ");
-                    nextRow1.getCell(22).setCellValue(1);
+                    nextRow1.getCell(set_con_win2_column).setCellValue(1);
                 }else {
-                    nextRow1.getCell(22).setCellValue(0);
+                    nextRow1.getCell(set_con_win2_column).setCellValue(0);
                 }
                 //parse set_con_fall2
                 if (current_set_win <= previous_set_win &&
                         previous_set_win <= previous2_set_win) {
                     if (current_set_win > 0) {
                         System.out.println(nextRow1.getRowNum() + " Set Con Fall2  ");
-                        nextRow1.getCell(23).setCellValue(1);
+                        nextRow1.getCell(set_con_fall2_column).setCellValue(1);
                     }else{
-                        nextRow1.getCell(23).setCellValue(0);
+                        nextRow1.getCell(set_con_fall2_column).setCellValue(0);
                     }
                 }else {
-                    nextRow1.getCell(23).setCellValue(0);
+                    nextRow1.getCell(set_con_fall2_column).setCellValue(0);
                 }
 
-                double rate = (double)ace_sum / server_count;
+
+                double rate = 0;
+                if (server_count != 0) {
+                    rate = (double) ace_sum / server_count;
+                }
                 System.out.println(nextRow.getRowNum() + " ace_sum " + ace_sum + "\n"
                         + " server_count " + server_count + "\n"
                 +" ace_sum/server_count " + rate + "\n");
                 //parse ace/server_count
-                nextRow1.getCell(24).setCellValue(rate);
+                nextRow1.getCell(ace_sum_d_server_count_column).setCellValue(rate);
 
             }
             try (FileOutputStream outputStream = new FileOutputStream(dest_xlsx)) {
