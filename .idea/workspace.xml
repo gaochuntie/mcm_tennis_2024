@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56fe6a18-19b9-42a2-8916-6181dd790818" name="Changes" comment="first commit">
+    <list default="true" id="56fe6a18-19b9-42a2-8916-6181dd790818" name="Changes" comment="add support to player1 and player2 both">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/Main.java" afterDir="false" />
     </list>
@@ -58,7 +58,10 @@
       <option name="presentableId" value="Default" />
       <updated>1706877844661</updated>
       <workItem from="1706877845770" duration="8837000" />
-      <workItem from="1706964142685" duration="4174000" />
+      <workItem from="1706964142685" duration="5158000" />
+      <workItem from="1707025775537" duration="1214000" />
+      <workItem from="1707038948533" duration="7188000" />
+      <workItem from="1707046569662" duration="2979000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <option name="closed" value="true" />
@@ -76,7 +79,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706885993090</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add support to player1 and player2 both">
+      <option name="closed" value="true" />
+      <created>1706968646108</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1706968646108</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -84,6 +95,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="first commit" />
+    <MESSAGE value="add support to player1 and player2 both" />
+    <option name="LAST_COMMIT_MESSAGE" value="add support to player1 and player2 both" />
   </component>
 </project>
