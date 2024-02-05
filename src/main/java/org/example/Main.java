@@ -48,12 +48,18 @@ public class Main {
     public static int set_speed_standarded_column = 37;
     public static int set_speed_avarage_column = 38;
 
+    public static int match_direct_serve_success_count_column = 39;
+    public static int match_hit_success_count_column = 40;
+    public static int match_con_win3_count_column = 41;
+    public static int match_speed_standarded_column = 42;
+    public static int match_speed_avarage_column = 43;
+
     public static final String player_unknown = "unknown";
 
     public static int is_server_value = 1;
 
     public static void main(String[] args) {
-        loadP2Statistics();
+        loadP1Statistics();
         fillData();
     }
 
@@ -168,23 +174,25 @@ public class Main {
             int set_direct_serve_success_count = 0;
             int set_hit_success_count = 0;
             int set_con_win3_count = 0;
-            int set_speed_standarded = 0;
-            int set_speed_avarage = 0;
+            int match_direct_serve_success_count = 0;
+            int match_hit_success_count = 0;
+            int match_con_win3_count = 0;
             List<Double> game_speed_list = new ArrayList<>();
             List<Double> set_speed_list = new ArrayList<>();
+            List<Double> match_speed_list = new ArrayList<>();
 
             String player_name = player_unknown;
             String player_name_previous = player_unknown;
             Row previousRow = null;
             Row previousRow1 = null;
-            List<Row> pendingRemoveRows=new ArrayList<>();
+            List<Row> pendingRemoveRows = new ArrayList<>();
             while (iterator.hasNext()) {
                 Row nextRow = iterator.next();
                 Row nextRow1 = iterator1.next();
                 System.out.println("------------------\n Index " + nextRow.getRowNum());
-//                if (nextRow.getRowNum() >= 100) {
-//                    break;
-//                }
+                if (nextRow.getRowNum() >= 7286) {
+                    break;
+                }
 
                 previous3_score = previous2_score;
                 previous2_score = previous_score;
@@ -206,9 +214,52 @@ public class Main {
                 point_no = (int) nextRow.getCell(point_no_column).getNumericCellValue();
                 player_name = nextRow.getCell(player_name_column).getStringCellValue();
                 System.out.println("Current player " + player_name + " Previous Player " + player_name_previous);
+//                if (game_no == game_no_previous) {
+//                    if (previousRow1 != null) {
+//                        pendingRemoveRows.add(previousRow1);
+//                    }
+//                }
+                            if (set_no == set_no_previous) {
+                                if (previousRow1 != null) {
+                                    pendingRemoveRows.add(previousRow1);
+                                }
+                            }
+//                if (player_name == player_name_previous || player_name_previous.equals(player_unknown)) {
+//
+//                    if (previousRow1 != null) {
+//                        System.out.println("Add to pending remove " + previousRow1.getRowNum() + " " + player_name + " " + player_name_previous);
+//                        pendingRemoveRows.add(previousRow1);
+//                    }
+//                }
+
                 if (!player_name.equals(player_name_previous)) {
                     if (!player_name.equals(player_unknown)) {
                         if (!player_name_previous.equals(player_unknown)) {
+
+                            System.out.println("Clear match summary data");
+                            //calculate speed details
+                            double deviation = calculateStandardDeviation(match_speed_list);
+                            double mean = calculateMean(match_speed_list);
+                            System.out.println("deviation " + deviation + " mean " + mean);
+                            previousRow1.getCell(match_speed_standarded_column).setCellValue(deviation);
+                            previousRow1.getCell(match_speed_avarage_column).setCellValue(mean);
+                            match_speed_list.clear();
+                            //calculate speed details
+                            deviation = calculateStandardDeviation(game_speed_list);
+                            mean = calculateMean(game_speed_list);
+                            System.out.println("deviation " + deviation + " mean " + mean);
+                            previousRow1.getCell(game_speed_standarded_column).setCellValue(deviation);
+                            previousRow1.getCell(game_speed_avarage_column).setCellValue(mean);
+                            game_speed_list.clear();
+
+                            //calculate speed details
+                            deviation = calculateStandardDeviation(set_speed_list);
+                            mean = calculateMean(set_speed_list);
+                            System.out.println("deviation " + deviation + " mean " + mean);
+                            previousRow1.getCell(set_speed_standarded_column).setCellValue(deviation);
+                            previousRow1.getCell(set_speed_avarage_column).setCellValue(mean);
+                            set_speed_list.clear();
+
                             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6\nFresh Player " + player_name);
                             previous_score = 0;
                             previous2_score = 0;
@@ -247,18 +298,40 @@ public class Main {
                             set_direct_serve_success_count = 0;
                             set_hit_success_count = 0;
                             set_con_win3_count = 0;
-                            set_speed_standarded = 0;
-                            set_speed_avarage = 0;
+
+                            match_direct_serve_success_count = 0;
+                            match_hit_success_count = 0;
+                            match_con_win3_count = 0;
                             game_speed_list.clear();
                             set_speed_list.clear();
 
-                            player_name = player_unknown;
-                            player_name_previous = player_unknown;
+//                            player_name = player_unknown;
+//                            player_name_previous = player_unknown;
                             System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^6");
                         }
                     }
-                }
+                }else{
+                    if (game_no != game_no_previous) {
+                        //calculate speed details
+                        double deviation = calculateStandardDeviation(game_speed_list);
+                        double mean = calculateMean(game_speed_list);
+                        System.out.println("deviation " + deviation + " mean " + mean);
+                        previousRow1.getCell(game_speed_standarded_column).setCellValue(deviation);
+                        previousRow1.getCell(game_speed_avarage_column).setCellValue(mean);
+                        game_speed_list.clear();
 
+                    }
+                    if (set_no != set_no_previous) {
+                        //calculate speed details
+                        double deviation = calculateStandardDeviation(set_speed_list);
+                        double mean = calculateMean(set_speed_list);
+                        System.out.println("deviation " + deviation + " mean " + mean);
+                        previousRow1.getCell(set_speed_standarded_column).setCellValue(deviation);
+                        previousRow1.getCell(set_speed_avarage_column).setCellValue(mean);
+                        set_speed_list.clear();
+
+                    }
+                }
                 if ((int) nextRow.getCell(server_column).getNumericCellValue() == is_server_value) {
                     server_count += 1;
                 }
@@ -268,44 +341,37 @@ public class Main {
                     game_direct_serve_success_count = 0;
                     game_hit_success_count = 0;
                     game_con_win3_count = 0;
-                    //calculate speed details
-                    double deviation = calculateStandardDeviation(game_speed_list);
-                    double mean = calculateMean(game_speed_list);
-                    System.out.println("deviation " + deviation + " mean " + mean);
-                    previousRow1.getCell(game_speed_standarded_column).setCellValue(deviation);
-                    previousRow1.getCell(game_speed_avarage_column).setCellValue(mean);
                     game_speed_list.clear();
+
                 }
                 if (set_no != set_no_previous) {
                     System.out.println("Clear set summary data");
                     set_hit_success_count = 0;
                     set_direct_serve_success_count = 0;
                     set_con_win3_count = 0;
-                    //calculate speed details
-                    double deviation = calculateStandardDeviation(set_speed_list);
-                    double mean = calculateMean(set_speed_list);
-                    System.out.println("deviation " + deviation + " mean " + mean);
-                    previousRow1.getCell(set_speed_standarded_column).setCellValue(deviation);
-                    previousRow1.getCell(set_speed_avarage_column).setCellValue(mean);
                     set_speed_list.clear();
+
                 }
                 //get speed
-                //System.out.println("Speed Type " + nextRow.getCell(speed_column).getCellType());
+                System.out.println("Speed Type " + nextRow.getCell(speed_column).getCellType());
                 if (nextRow.getCell(speed_column).getCellType() == CellType.NUMERIC) {
                     System.out.println("Speed " + nextRow.getCell(speed_column).getNumericCellValue());
                     game_speed_list.add(nextRow.getCell(speed_column).getNumericCellValue());
                     set_speed_list.add(nextRow.getCell(speed_column).getNumericCellValue());
+                    match_speed_list.add(nextRow.getCell(speed_column).getNumericCellValue());
 
                 }
                 if ((int) nextRow.getCell(ace_column).getNumericCellValue() == 1) {
                     ace_sum += 1;
                     game_direct_serve_success_count += 1;
                     set_direct_serve_success_count += 1;
+                    match_direct_serve_success_count += 1;
                 }
                 if ((int) nextRow.getCell(win_column).getNumericCellValue() == 1) {
                     win_sum += 1;
                     game_hit_success_count += 1;
                     set_hit_success_count += 1;
+                    match_hit_success_count += 1;
                 }
 
                 if (game_no > game_no_previous) {
@@ -404,7 +470,9 @@ public class Main {
                         previous_set_win > previous2_set_win) {
                     System.out.println(nextRow1.getRowNum() + " Set Con Win2  ");
                     nextRow1.getCell(set_con_win2_column).setCellValue(1);
+                    match_con_win3_count += 1;
                 } else {
+                    match_con_win3_count = 0;
                     nextRow1.getCell(set_con_win2_column).setCellValue(0);
                 }
                 //parse set_con_fall2
@@ -446,16 +514,17 @@ public class Main {
                 nextRow1.getCell(set_direct_serve_success_count_column).setCellValue(set_direct_serve_success_count);
                 nextRow1.getCell(set_hit_success_count_column).setCellValue(set_hit_success_count);
                 nextRow1.getCell(set_con_win3_count_column).setCellValue(set_con_win3_count);
+                //parse match summary info
+                System.out.println(nextRow.getRowNum() + " match_direct_serve_success_count " + match_direct_serve_success_count + "\n"
+                        + " match_hit_success_count " + match_hit_success_count + "\n"
+                        + " match_con_win3_count " + match_con_win3_count + "\n");
+                nextRow1.getCell(match_direct_serve_success_count_column).setCellValue(match_direct_serve_success_count);
+                nextRow1.getCell(match_hit_success_count_column).setCellValue(match_hit_success_count);
+                nextRow1.getCell(match_con_win3_count_column).setCellValue(match_con_win3_count);
 
-                previousRow = nextRow;
+
+//
                 previousRow1 = nextRow1;
-
-                //
-                if (game_no == game_no_previous) {
-                    if (previousRow1!=null) {
-                        pendingRemoveRows.add(previousRow1);
-                    }
-                }
             }
             for (Row row : pendingRemoveRows) {
                 sheet1.removeRow(row);
